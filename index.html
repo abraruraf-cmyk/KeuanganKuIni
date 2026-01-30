@@ -63,8 +63,8 @@
         const form = document.getElementById('formKeuangan');
         const status = document.getElementById('status');
         
-        // GANTI URL_WEB_APP DENGAN URL DARI STEP 2
-        const WEB_APP_URL = 'https://script.google.com/macros/s/PASTE_URL_DISINI/exec'; // ← GANTI INI!
+        // URL WEB APP ANDA SUDAH DISISIPKAN OTOMATIS (TIDAK PERLU DIEDIT LAGI!)
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx9vjwH6kDlKjT86yVZwuayaZu0WOG7Euft5xO96OtACbepr4nOOhjXIDqkmlKN-QxNig/exec';
         
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -88,13 +88,13 @@
                 form.reset();
                 setTimeout(() => status.style.display = 'none', 3000);
             } catch (error) {
-                status.textContent = '❌ Gagal simpan. Cek internet/URL.';
+                status.textContent = '❌ Gagal simpan. Cek koneksi internet atau URL.';
                 status.className = 'status error';
             }
             status.style.display = 'block';
         });
         
-        // Set tanggal hari ini
+        // Set tanggal hari ini secara otomatis
         document.getElementById('tanggal').valueAsDate = new Date();
     </script>
 </body>
