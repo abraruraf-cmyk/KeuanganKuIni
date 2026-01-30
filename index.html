@@ -1,101 +1,102 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keuangan Harian - Input Real-time</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .container { background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); padding: 40px; max-width: 400px; width: 100%; }
-        h1 { text-align: center; color: #333; margin-bottom: 30px; font-size: 24px; }
-        label { display: block; margin: 15px 0 5px; color: #555; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: border 0.3s; }
-        input:focus, select:focus, textarea:focus { border-color: #4CAF50; outline: none; }
-        textarea { resize: vertical; height: 80px; }
-        button { width: 100%; padding: 15px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: transform 0.3s; }
-        button:hover { transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
-        .status { text-align: center; margin-top: 10px; padding: 10px; border-radius: 10px; font-weight: bold; display: none; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
-        @media (max-width: 480px) { .container { padding: 30px 20px; } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keuangan Harian - Input Real-time</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .container { background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); padding: 40px; max-width: 400px; width: 100%; }
+    h1 { text-align: center; color: #333; margin-bottom: 30px; font-size: 24px; }
+    label { display: block; margin: 15px 0 5px; color: #555; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: border 0.3s; }
+    input:focus, select:focus, textarea:focus { border-color: #4CAF50; outline: none; }
+    textarea { resize: vertical; height: 80px; }
+    button { width: 100%; padding: 15px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: transform 0.3s; }
+    button:hover { transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+    .status { text-align: center; margin-top: 10px; padding: 10px; border-radius: 10px; font-weight: bold; display: none; }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+    @media (max-width: 480px) { .container { padding: 30px 20px; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>💰 Keuangan Harian</h1>
-        <form id="formKeuangan">
-            <label>Tanggal:</label>
-            <input type="date" id="tanggal" required>
-            
-            <label>Kategori:</label>
-            <select id="kategori" required>
-                <option value="">Pilih...</option>
-                <option value="Gaji">Gaji</option>
-                <option value="Bonus">Bonus</option>
-                <option value="Makan">Makan</option>
-                <option value="Transport">Transport</option>
-                <option value="Belanja">Belanja</option>
-                <option value="Tagihan">Tagihan</option>
-                <option value="Lainnya">Lainnya</option>
-            </select>
-            
-            <label>Jumlah (Rp):</label>
-            <input type="number" id="jumlah" placeholder="100000" min="0" step="1000" required>
-            
-            <label>Tipe:</label>
-            <select id="tipe" required>
-                <option value="">Pilih...</option>
-                <option value="Pemasukan">Pemasukan 💹</option>
-                <option value="Pengeluaran">Pengeluaran 📉</option>
-            </select>
-            
-            <label>Deskripsi:</label>
-            <textarea id="deskripsi" placeholder="Catatan opsional..."></textarea>
-            
-            <button type="submit">🚀 Simpan Data</button>
-        </form>
-        <div id="status" class="status"></div>
-    </div>
+  <div class="container">
+    <h1>💰 Keuangan Harian</h1>
+    <form id="formKeuangan">
+      <label>Tanggal:</label>
+      <input type="date" id="tanggal" required />
 
-    <script>
-        const form = document.getElementById('formKeuangan');
-        const status = document.getElementById('status');
-        
-        // GANTI URL_WEB_APP DENGAN URL DARI STEP 2
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx9vjwH6kDlKjT86yVZwuayaZu0WOG7Euft5xO96OtACbepr4nOOhjXIDqkmlKN-QxNig/exec'; // ← GANTI INI!
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                tanggal: document.getElementById('tanggal').value,
-                kategori: document.getElementById('kategori').value,
-                jumlah: document.getElementById('jumlah').value,
-                tipe: document.getElementById('tipe').value,
-                deskripsi: document.getElementById('deskripsi').value
-            };
-            
-            try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                const result = await response.text();
-                status.textContent = result;
-                status.className = 'status success';
-                form.reset();
-                setTimeout(() => status.style.display = 'none', 3000);
-            } catch (error) {
-                status.textContent = '❌ Gagal simpan. Cek internet/URL.';
-                status.className = 'status error';
-            }
-            status.style.display = 'block';
+      <label>Kategori:</label>
+      <select id="kategori" required>
+        <option value="">Pilih...</option>
+        <option value="Gaji">Gaji</option>
+        <option value="Bonus">Bonus</option>
+        <option value="Makan">Makan</option>
+        <option value="Transport">Transport</option>
+        <option value="Belanja">Belanja</option>
+        <option value="Tagihan">Tagihan</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+
+      <label>Jumlah (Rp):</label>
+      <input type="number" id="jumlah" placeholder="100000" min="0" step="1000" required />
+
+      <label>Tipe:</label>
+      <select id="tipe" required>
+        <option value="">Pilih...</option>
+        <option value="Pemasukan">Pemasukan 💹</option>
+        <option value="Pengeluaran">Pengeluaran 📉</option>
+      </select>
+
+      <label>Deskripsi:</label>
+      <textarea id="deskripsi" placeholder="Catatan opsional..."></textarea>
+
+      <button type="submit">🚀 Simpan Data</button>
+    </form>
+    <div id="status" class="status"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('formKeuangan');
+    const status = document.getElementById('status');
+
+    // Ini URL Web App milik kamu ✅
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx9vjwH6kDlKjT86yVZwuayaZu0WOG7Euft5xO96OtACbepr4nOOhjXIDqkmlKN-QxNig/exec';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        tanggal: document.getElementById('tanggal').value,
+        kategori: document.getElementById('kategori').value,
+        jumlah: document.getElementById('jumlah').value,
+        tipe: document.getElementById('tipe').value,
+        deskripsi: document.getElementById('deskripsi').value
+      };
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
         });
-        
-        // Set tanggal hari ini
-        document.getElementById('tanggal').valueAsDate = new Date();
-    </script>
+        const result = await response.text();
+        status.textContent = result;
+        status.className = 'status success';
+        form.reset();
+        setTimeout(() => status.style.display = 'none', 3000);
+      } catch (error) {
+        status.textContent = '❌ Gagal simpan. Cek internet atau URL Web App.';
+        status.className = 'status error';
+      }
+
+      status.style.display = 'block';
+    });
+
+    // Isi tanggal hari ini secara default
+    document.getElementById('tanggal').valueAsDate = new Date();
+  </script>
 </body>
 </html>
